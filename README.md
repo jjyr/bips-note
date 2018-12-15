@@ -59,9 +59,9 @@
 ### BIP 18 - hashScriptCheck, 更新了比特币交易的格式，以支持 BIP 16 P2SH
   * 废弃交易的 scriptSig， scriptPubKey（考虑向后兼容，仍支持这两个字段）
   * 新字段 scriptCheck, dataSig, hashScriptCheck
-  * scriptCheck: [pubkey] OP_CHECKSIG
-  * dataSig: [signature] {[pubkey] OP_CHECKSIG}
-  * hashScriptCheck: [20-byte-hash of {[pubkey] OP_CHECKSIG}]
+  * scriptCheck: 一段脚本，hash 后必须符合 hashScriptCheck, 执行后返回 true 则交易通过验证
+  * dataSig: 只包含 data，会预先放在 stack 上，再去执行 scriptCheck (似乎类似 CKB 中的 signed_arguments 设计？)
+  * hashScriptCheck: 放在交易的 output 中，指定哪些脚本可以解锁 output
 
 
 ### BIP 19 - M-of-N Standard Transactions (Low SigOp) 提供两个新的 Op 支持低 SigOp 的多签操作
