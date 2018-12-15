@@ -70,4 +70,12 @@
   * N-of-N: OP_CHECKSIGVERIFY: `  {pubkey} OP_CHECKSIGVERIFY {pubkey} OP_CHECKSIGVERIFY {pubkey} OP_CHECKSIGVERIFY`
   * N-of-M: OP_CHECKSIG: `  {pubkey} OP_CHECKSIG OP_SWAP {pubkey} OP_CHECKSIG OP_ADD {n} OP_EQUAL`
   * 新 Op 相比之下更加灵活可扩展
+  
+  
+### BIP 21 - 定义了 bitcoin 的 URI schema, 允许用 URI、QR code 等发起支付
+  *  `bitcoin:<address>[?amount=<amount>][?label=<label>][?message=<message>]`
+  * URI 支持 `amountparam / labelparam / messageparam / otherparam / reqparam` 等参数
+  * req 开头代表必须填的字段
+
+
 
