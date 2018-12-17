@@ -78,4 +78,11 @@
   * req 开头代表必须填的字段
 
 
+### BIP 22 - 描述 Bitcoin 提供给 Miner 的新 JSON RPC 接口
+  * `getblocktemplate` - 矿工用来获取挖矿模板
+    * 请求时可以选择 mode 是 "template" / "proposal"
+    * 返回 `height`, `previousblockhash`, `transactions` 等字段供矿工挖矿使用
+  * `submitblock` - 用来提交 block, 内容是一个 hex-encoded 的 block
+  * 可选功能 Long Polling - 支持 Long Polling 的客户端会返回 `longpollid` 给矿工，矿工用来 polling 判断当前任务是否过期（比如客户端从网络上接收了新的块）
+
 
