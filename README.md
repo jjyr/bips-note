@@ -91,7 +91,7 @@
   * Level 1 支持
     * RFC 1945 - DNS over HTTPS
     * BIP 22 Long Polling
-    * Basic Pool Extensions - `getblocktemplate` 接口支持 `target` 参数，获取模版有效时间（估计是根据块时间预估出的）
+    * Basic Pool Extensions - `getblocktemplate` 接口支持 `target` 参数，获取小于某个难度的 block 模板
     * Mutation "coinbase/append" - append the provided coinbase scriptSig（没明白这样的意图，scriptSig 已在 BIP 18 废弃）
     * Submission Abbreviation "submit/coinbase" - 如果 miner 不改动 `get_block_template` 的交易列表，这个字段允许 miner 只提交 coinbase, 不再重复提交 transactions 以优化提交过程的性能
     * Mutation "time/increment" - 改变 header 中的时间到某个时间点后（没明白这样的意图）
@@ -100,5 +100,6 @@
     * Block Proposal - Miner 可以在任务过期前向节点提交 block proposal，节点返回*可接收*、*拒绝* 或 *修改后的 template*
   * 还有很多琐碎的扩展参数未列出
   * serverlist - 节点的功能，返回一个列表包含节点和节点的状态，miner 可以把这些节点当成一个逻辑节点来用（相当于客户端负载均衡）
+  * BIP 23 中对部分参数的用途的解释 https://github.com/bitcoin/bips/blob/master/bip-0023.mediawiki#rationale
     
   
