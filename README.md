@@ -86,3 +86,19 @@
   * 可选功能 Long Polling - 支持 Long Polling 的客户端会返回 `longpollid` 给矿工，矿工用来 polling 判断当前任务是否过期（比如客户端从网络上接收了新的块）
 
 
+### BIP 23 - 在 BIP 22 的基础上扩展，对矿池挖矿做了优化
+  * 本 BIP 对 `get_block_template` 做了扩展以支持矿池，从功能支持上分为 level1 支持和 level2 支持
+  * Level 1 支持
+    * RFC 1945 - DNS over HTTPS
+    * BIP 22 Long Polling
+    * Basic Pool Extensions - `getblocktemplate` 接口支持 `target` 参数，获取模版有效时间（估计是根据块时间预估出的）
+    * Mutation "coinbase/append" - append the provided coinbase scriptSig（没明白这样的意图，scriptSig 已在 BIP 18 废弃）
+    * Submission Abbreviation "submit/coinbase" - 如果 miner 不改动 `get_block_template` 的交易列表，这个字段允许 miner 只提交 coinbase, 不再重复提交 transactions 以优化提交过程的性能
+    * Mutation "time/increment" - 改变 header 中的时间到某个时间点后（没明白这样的意图）
+  * Level 2 支持
+    * Mutation "transactions/add" - 允许 Miner 追加已验证的交易到 `get_block_template` 中，但不保证一定加进去
+    * Block Proposal - Miner 可以在任务过期前向节点提交 block proposal，节点返回*可接收*、*拒绝* 或 *修改后的 template*
+  * 还有很多琐碎的扩展参数未列出
+  * serverlist - 节点的功能，返回一个列表包含节点和节点的状态，miner 可以把这些节点当成一个逻辑节点来用（相当于客户端负载均衡）
+    
+  
