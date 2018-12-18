@@ -102,4 +102,47 @@
   * serverlist - 节点的功能，返回一个列表包含节点和节点的状态，miner 可以把这些节点当成一个逻辑节点来用（相当于客户端负载均衡）
   * BIP 23 中对部分参数的用途的解释 https://github.com/bitcoin/bips/blob/master/bip-0023.mediawiki#rationale
     
-  
+
+### BIP 30 - 比特币处理重复交易
+  * 之前的比特币实现不会考虑有重复的交易，但实际 coinbase 交易很容易重复，基于 coinbase 也可以构建出重复的交易
+  * 引入了一条规则：块中不允许包含和之前存在过且未花完的交易具有同样 identifier (tx hash?)的交易
+  * 本质问题是允许 coinbase 交易重复导致交易的 identifier 不唯一引起的客户端未定义行为
+
+
+### BIP 31 - ping 增加 nonce，支持 pong
+  * 之前的比特币实现难以判断 peer 是否正常在线，BIP 31 支持使用 ping/pong 来判断 peer 是否在线
+  * ping 消息增加 nonce 填入随机值用来区分，peer 应该返回对应的 pong 消息且 nonce 一致
+
+
+### BIP 32 - HD 钱包(Hierarchical Deterministic Wallets)
+  * BIP 规定了 HD 钱包标准，概要:
+    * 从单一 seed 生成 keypair 的树
+      * extended key 的 identifier 和序列化方式
+      * 从随机数中生成 master key 和 chain code 的方法
+    * 在 keypair 树上构建钱包结构
+  * Key derivation: 从 parent key 生成一组 child key
+    * chain code: extra 256 bits of entropy
+    * extended key: 普通的私钥对加上 chain code 就是 extended key
+    * child key: Each extended key(parent key + chain code) has 231 normal child keys, and 231 hardened child keys
+      * Normal child keys: 能从 parent 公钥直接计算出 child 公钥（不需要先生成 child 私钥）
+      * Hardened child keys: 只能从 parent 私钥生成 child 私钥，再生成公钥
+    * 生成 child key: 使用 secp256k1 原语根据 parent key, chain code 生成确定性的 child keys; BIP 有详细算法描述
+  * keypair 树
+    * 一个 master extended key 可以如上所述生成 231 normal child keys 和 231 hardened child keys
+    * 这些 child keys 也都可以作为 extended key 这样组成了一个树形结构, master extended key 是 root
+    * 知道某个 extended key 私钥就可以计算他的所有子节点的公钥和私钥
+    * 知道某个 extended key 公钥就可以计算他的所有子节点中 normal child key 的公钥
+    * 拥有 root 私钥可以计算出整棵树
+  * 钱包结构: 在上述的 keypair 树之上设计一个钱包结构
+    * 钱包由多个 accounts 组成，按数字编号，0 为默认 account, HD wallet 可以只支持 0
+      * accounts 使用的是 master extended key 派生的 hardened child keys
+      * 原因是得知 extended key 的公钥和其生成的 normal child key 的私钥时，相当于得知 extended key 的私钥（详细见 BIP 的公式）
+      * 这也是 hardened child keys 存在的原因, accouts 使用 hardened child keys 即便出现上述泄漏也只会导致某个 account 的私钥泄漏，不会影响 master extended key 和其他 accounts
+      * 这代表 master extended key 的公钥和私钥都必须得到保护
+    * 每个 account 由两个 keypair chains 组成, internal 和 external
+      * external 用于生成公钥地址
+      * internal 用于其他操作
+  * 总结
+    * 用简单的树结构就实现了很强大的私钥派生和管理功能
+    * 足够灵活 Normal child keys / Hardened child keys 以及 accounts 和 keypair chain 足够支持复杂的场景
+
