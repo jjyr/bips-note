@@ -146,3 +146,13 @@
     * 用简单的树结构就实现了很强大的私钥派生和管理功能
     * 足够灵活 Normal child keys / Hardened child keys 以及 accounts 和 keypair chain 足够支持复杂的场景
 
+
+### BIP 33 - Stratized Node, 用于给钱包等 client 提供查询等服务
+  * Bitcoin 连接新节点时会在 version 消息中交换 services 字段，表达节点支持的能力，BIP 33 提议新增两个值
+    * NODE_SERVICE - 代表支持 "getoutputs" and "getspends" 消息, 除非 NODE_NETWORK 也被指定否则不支持 "getdata"
+    * NODE_STRATIZED - 代表节点会执行 BIP 描述的 stratized 策略，因为 stratized node 不包含全部区块所以不支持 "getblocks"
+  * 为支持客户端新增 "getoutputs", "outputs", "getspend", "spend" 四个消息允许无需直接访问区块链也能获取一个地址的交易历史
+  * Stratized Node 应从多个节点同步区块，至少要验证块的 merkle root 和交易的唯一性
+  * Stratized Node 的安全性来自于从不同 peers 获取的共同历史(比如从 6/8 的 peers 获取了相同的块)
+
+
