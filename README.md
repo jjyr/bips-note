@@ -156,3 +156,32 @@
   * Stratized Node 的安全性来自于从不同 peers 获取的共同历史(比如从 6/8 的 peers 获取了相同的块)
 
 
+### BIP 34 - Block v2, coinbase 交易加入块高
+  * 规定在 coinbase 的 scriptSig 中加入当前块高作为第一个元素，防止出现重复的交易(BIP 30)
+  * Block version 升级为 2，Block number 227,835 (timestamp 2013-03-24 15:49:13 GMT) was the last version 1 block.
+
+
+### BIP 35 - 允许查询 Bitcoin 节点交易池的信息
+  * 有些情况会需要查询交易池中尚未打包的交易
+    * SPV 客户端可能需要获取交易池中尚未确认的交易
+    * Miner 重启后去获取交易池交易进行打包
+    * 远程网络诊断
+  * 支持 "mempool" 消息，客户端返回交易池中的 tx hash 列表
+  * Bitcoin 实现需要扩展 "getdata" 以支持请求交易池中的交易
+
+
+### BIP 36 - 支持在比特币网络上扩展自定义服务
+  * 扩展 version 消息，避免污染 services (services 字段用来表示节点支持的服务)
+    * service_count - 支持的服务数量
+    * service_list - 服务列表(service_name, service_version, service_data)
+  * 自定义服务
+    * `NODE_*` 开头的为标准服务，其余为自定义服务
+    * 自定义命令推荐用 "<服务名>:<命令>" 的格式, 客户端应忽略所有无法理解的消息
+  * 自定义服务标准化
+    * 不能使用 `service_data`, 标准服务没有这个字段
+    * 必须用比特币的节点发现方式，通过标注 services 的一个 bit 来表示支持
+    * 不能使用和目前比特币冲突的子命令
+    * 通过提交 BIP 来完成标准化
+  * BIP 通过制定自定义服务的格式和标准化流程鼓励更多开发者在比特币网络上创新
+
+
