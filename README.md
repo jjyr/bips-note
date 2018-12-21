@@ -185,3 +185,18 @@
   * BIP 通过制定自定义服务的格式和标准化流程鼓励更多开发者在比特币网络上创新
 
 
+### BIP 43 - 引入 BIP 32 描述的 HD 钱包结构第一层作为 purpose 字段，用来描述账户的目的
+  * HD 钱包结构第一层作为 purpose, 例如 BIP 32 中描述的 0 为默认钱包，其余的 BIP 可以规定其他编号作为特定用途
+
+
+### BIP 44 - 扩展了 BIP 32 中描述的 HD 钱包结构以支持不同币
+  * `m / purpose' / coin_type' / account' / change / address_index`, 撇号代表  hardened key
+    * purpose - BIP 43 中提出，固定为 44 代表当前账户拥有 BIP44 描述的层级结构
+    * coin_type - 代表不同的加密货币如 `Bitcoin`, `LiteCoin`, `Namecoin`
+    * account
+    * change - external/internal
+    * account_index - 账户编号
+  * 描述了发现账户的算法，规定账户未使用时客户端不应该生成新账户(用来支持发现)
+  * https://github.com/satoshilabs/slips/blob/master/slip-0044.md 维护了支持的币和分配的编号
+
+
