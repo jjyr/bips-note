@@ -123,12 +123,12 @@
   * Key derivation: 从 parent key 生成一组 child key
     * chain code: extra 256 bits of entropy
     * extended key: 普通的私钥对加上 chain code 就是 extended key
-    * child key: Each extended key(parent key + chain code) has 231 normal child keys, and 231 hardened child keys
+    * child key: Each extended key(parent key + chain code) has `2**31` normal child keys, and `2**31` hardened child keys
       * Normal child keys: 能从 parent 公钥直接计算出 child 公钥（不需要先生成 child 私钥）
       * Hardened child keys: 只能从 parent 私钥生成 child 私钥，再生成公钥
     * 生成 child key: 使用 secp256k1 原语根据 parent key, chain code 生成确定性的 child keys; BIP 有详细算法描述
   * keypair 树
-    * 一个 master extended key 可以如上所述生成 231 normal child keys 和 231 hardened child keys
+    * 一个 master extended key 可以如上所述生成 `2**31` normal child keys 和 `2**31` hardened child keys
     * 这些 child keys 也都可以作为 extended key 这样组成了一个树形结构, master extended key 是 root
     * 知道某个 extended key 私钥就可以计算他的所有子节点的公钥和私钥
     * 知道某个 extended key 公钥就可以计算他的所有子节点中 normal child key 的公钥
